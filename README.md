@@ -1,7 +1,7 @@
 # Website Redesigning Challenge
 
 ## Instructions
-- clivk CODE -> Download ZIP ->extract all ->open folder in vs code
+- click CODE -> Download ZIP ->extract all ->open folder in vs code
 - Open index.html in your browser
 - Identify and fix errors in the code
 - Improve UI, alignment, and functionality
