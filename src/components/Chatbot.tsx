@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Zap, Bot, User, Minimize2, Maximize2 } from 'lucide-react';
 import { useChatbot } from '@/hooks/useChatbot';
@@ -40,7 +41,8 @@ export default function Chatbot() {
     }
   };
 
-  if (!isLoggedIn) return null;
+  // Remove the check that hides the whole component
+  // if (!isLoggedIn) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-[9998] flex flex-col items-end">
@@ -61,7 +63,10 @@ export default function Chatbot() {
                   </div>
                   <div>
                     <h3 className="font-black uppercase italic text-black leading-none">PACE BOT</h3>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-black/60">AI COMMAND CENTER</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-black/60">AI COMMAND CENTER</span>
+                      {!isLoggedIn && <span className="bg-black text-white text-[8px] px-1 font-black">AUTH REQUIRED</span>}
+                    </div>
                   </div>
                 </div>
                 <button 
@@ -77,33 +82,47 @@ export default function Chatbot() {
                 ref={scrollRef}
                 className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth grid-pattern-sm"
               >
-                {messages.length === 0 && (
+                {!isLoggedIn ? (
+                  <div className="h-full flex flex-col items-center justify-center text-center space-y-6">
+                    <div className="bg-accent p-6 border-4 border-foreground shadow-[6px_6px_0px_black] rotate-3">
+                      <Zap className="w-12 h-12 text-black animate-pulse" />
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="font-black uppercase italic text-xl">PROTOCOL LOCKED</h4>
+                      <p className="text-xs font-bold uppercase tracking-widest opacity-60">Authentication Required to Transmit</p>
+                    </div>
+                    <Button asChild className="border-4 border-foreground shadow-[4px_4px_0px_black]">
+                      <Link href="/login" onClick={() => setIsOpen(false)}>INITIALIZE LOGIN</Link>
+                    </Button>
+                  </div>
+                ) : messages.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-40 grayscale">
                     <Zap className="w-12 h-12" />
                     <p className="text-xs font-black uppercase tracking-widest">Awaiting Transmissions...</p>
                   </div>
-                )}
-                {messages.map((msg, i) => (
-                  <motion.div
-                    initial={{ opacity: 0, x: msg.role === 'user' ? 20 : -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    key={i}
-                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div className={`max-w-[85%] p-4 border-3 border-foreground shadow-[4px_4px_0px_black] font-bold text-sm ${
-                      msg.role === 'user' 
-                        ? 'bg-accent rotate-1' 
-                        : 'bg-white -rotate-1'
-                    }`}>
-                      <div className="flex items-center gap-2 mb-1 opacity-60">
-                        {msg.role === 'user' ? <User size={12} /> : <Bot size={12} />}
-                        <span className="text-[10px] font-black uppercase">{msg.role === 'user' ? 'PARTICIPANT' : 'PACE BOT'}</span>
+                ) : (
+                  messages.map((msg, i) => (
+                    <motion.div
+                      initial={{ opacity: 0, x: msg.role === 'user' ? 20 : -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      key={i}
+                      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div className={`max-w-[85%] p-4 border-3 border-foreground shadow-[4px_4px_0px_black] font-bold text-sm ${
+                        msg.role === 'user' 
+                          ? 'bg-accent rotate-1' 
+                          : 'bg-white -rotate-1'
+                      }`}>
+                        <div className="flex items-center gap-2 mb-1 opacity-60">
+                          {msg.role === 'user' ? <User size={12} /> : <Bot size={12} />}
+                          <span className="text-[10px] font-black uppercase">{msg.role === 'user' ? 'PARTICIPANT' : 'PACE BOT'}</span>
+                        </div>
+                        {msg.content}
                       </div>
-                      {msg.content}
-                    </div>
-                  </motion.div>
-                ))}
-                {loading && (
+                    </motion.div>
+                  ))
+                )}
+                {loading && isLoggedIn && (
                   <div className="flex justify-start">
                     <div className="bg-white p-4 border-3 border-foreground shadow-[4px_4px_0px_black] -rotate-1 animate-pulse">
                       <div className="flex gap-1">
