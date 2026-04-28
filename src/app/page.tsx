@@ -215,12 +215,12 @@ export default function CompleteEventsPage() {
       gsap.from('.event-card', {
         scrollTrigger: {
           trigger: '.events-grid',
-          start: 'top 80%',
+          start: 'top 95%',
         },
-        y: 60,
+        y: 40,
         opacity: 0,
-        duration: 0.8,
-        stagger: 0.1,
+        duration: 0.5,
+        stagger: 0.08,
         ease: 'power3.out'
       });
 

@@ -148,7 +148,7 @@ export default function SchedulePage() {
                       key={i}
                       initial={{ opacity: 0, x: isEven ? -50 : 50 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true, margin: "-100px" }}
+                      viewport={{ once: true, margin: "0px" }}
                       className={`relative flex flex-col md:flex-row items-start md:items-center gap-12 ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'}`}
                     >
                       {/* Event Content */}

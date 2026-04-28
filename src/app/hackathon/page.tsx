@@ -75,12 +75,12 @@ export default function HackathonPage() {
       gsap.from('.track-card', {
         scrollTrigger: {
           trigger: '.track-grid',
-          start: 'top 95%',
+          start: 'top 100%',
         },
         y: 30,
         opacity: 0,
-        duration: 1,
-        stagger: 0.15,
+        duration: 0.5,
+        stagger: 0.08,
         ease: 'power3.out',
         clearProps: 'all'
       });
@@ -88,11 +88,11 @@ export default function HackathonPage() {
       gsap.from('.reveal-section', {
         scrollTrigger: {
           trigger: '.reveal-section',
-          start: 'top 80%',
+          start: 'top 100%',
         },
-        y: 50,
+        y: 40,
         opacity: 0,
-        duration: 1,
+        duration: 0.6,
         ease: 'power3.out'
       });
     }, containerRef);
