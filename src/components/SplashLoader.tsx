@@ -41,10 +41,18 @@ export default function SplashLoader() {
       });
     }, interval);
 
+    // Add scroll lock
+    if (isVisible) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
     return () => {
       clearInterval(timer);
+      document.body.style.overflow = 'unset';
     };
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, isVisible]);
 
   useEffect(() => {
     const statusTimer = setInterval(() => {
@@ -67,7 +75,7 @@ export default function SplashLoader() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[9999] bg-background grid-pattern flex flex-col items-center justify-center p-6 text-center space-y-12"
+          className="fixed inset-0 z-[9999] bg-background grid-pattern flex flex-col items-center justify-center p-6 text-center space-y-12 h-[100dvh] w-full"
         >
           <div className="space-y-4">
             <motion.div 
