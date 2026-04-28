@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, ArrowRight, Zap, LogIn, Sparkles, Shield, Landmark, Heart, Lightbulb } from 'lucide-react';
+import { User, Lock, ArrowRight, Zap, Sparkles, Shield, Landmark, Heart, Lightbulb, MapPin, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -13,29 +13,43 @@ import { useAuth } from '@/context/AuthContext';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [yearOfStudy, setYearOfStudy] = useState('');
+  const [collegeName, setCollegeName] = useState('');
+  const [location, setLocation] = useState('');
+  const [usn, setUsn] = useState('');
   const [password, setPassword] = useState('');
-  const [track, setTrack] = useState('');
-  const { login } = useAuth();
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  
+  const { register } = useAuth();
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !password) {
-      alert('Please fill in all mandatory fields');
+    setError('');
+    
+    if (!name || !yearOfStudy || !collegeName || !location || !usn || !password) {
+      setError('PROTOCOL ERROR: ALL FIELDS MANDATORY');
       return;
     }
-    // Simple functional login from AuthContext
-    login(email);
-    router.push('/');
-  };
 
-  const tracks = [
-    { id: 'healthcare', name: 'HEALTHCARE', icon: Heart, color: 'text-primary' },
-    { id: 'fintech', name: 'FINTECH', icon: Landmark, color: 'text-secondary' },
-    { id: 'cyber', name: 'CYBERSECURITY', icon: Shield, color: 'text-accent' },
-    { id: 'open', name: 'OPEN INNOVATION', icon: Lightbulb, color: 'text-yellow-400' },
-  ];
+    setLoading(true);
+    try {
+      await register('participant', {
+        name,
+        yearOfStudy: parseInt(yearOfStudy),
+        collegeName,
+        location,
+        usn,
+        password,
+      });
+      router.push('/events');
+    } catch (err: any) {
+      setError(err.message || 'REGISTRATION FAILED');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background grid-pattern flex items-center justify-center p-6 pt-32 pb-20 relative overflow-hidden">
@@ -55,7 +69,7 @@ export default function RegisterPage() {
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="w-full max-w-xl relative z-10"
+        className="w-full max-w-2xl relative z-10"
       >
         <Card className="border-4 border-border shadow-[12px_12px_0px_black] bg-white text-black relative">
           <CardHeader className="bg-primary border-b-4 border-border p-6 sm:p-10 text-center relative">
@@ -72,15 +86,21 @@ export default function RegisterPage() {
             </CardDescription>
           </CardHeader>
           
-          <CardContent className="p-8 space-y-8">
+          <CardContent className="p-8">
+            {error && (
+              <div className="mb-6 p-4 border-4 border-foreground bg-destructive text-white font-black uppercase italic shadow-[4px_4px_0px_black]">
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-black uppercase tracking-widest ml-1">Warrior Name</label>
+                  <label className="text-xs font-black uppercase tracking-widest ml-1 opacity-60">Full Name</label>
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
                     <Input 
-                      placeholder="YOUR FULL NAME" 
+                      placeholder="WARRIOR NAME" 
                       className="pl-12 h-14 border-4 border-border shadow-[4px_4px_0px_black] bg-white text-black font-bold focus:shadow-none transition-all placeholder:text-zinc-400"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -89,21 +109,64 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-black uppercase tracking-widest ml-1">Email Address</label>
+                  <label className="text-xs font-black uppercase tracking-widest ml-1 opacity-60">USN / ID</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
+                    <Shield className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
                     <Input 
-                      type="email" 
-                      placeholder="YOU@EXAMPLE.COM" 
+                      placeholder="1XX21XX000" 
                       className="pl-12 h-14 border-4 border-border shadow-[4px_4px_0px_black] bg-white text-black font-bold focus:shadow-none transition-all placeholder:text-zinc-400"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={usn}
+                      onChange={(e) => setUsn(e.target.value.toUpperCase())}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-black uppercase tracking-widest ml-1 opacity-60">Year of Study</label>
+                  <div className="relative">
+                    <GraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
+                    <select
+                      value={yearOfStudy}
+                      onChange={(e) => setYearOfStudy(e.target.value)}
+                      className="w-full pl-12 h-14 border-4 border-border shadow-[4px_4px_0px_black] bg-white text-black font-bold focus:shadow-none transition-all appearance-none outline-none"
+                    >
+                      <option value="">SELECT YEAR</option>
+                      <option value="1">1st YEAR</option>
+                      <option value="2">2nd YEAR</option>
+                      <option value="3">3rd YEAR</option>
+                      <option value="4">4th YEAR</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-black uppercase tracking-widest ml-1 opacity-60">Location</label>
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
+                    <Input 
+                      placeholder="CITY, STATE" 
+                      className="pl-12 h-14 border-4 border-border shadow-[4px_4px_0px_black] bg-white text-black font-bold focus:shadow-none transition-all placeholder:text-zinc-400"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <label className="text-sm font-black uppercase tracking-widest ml-1">Secret Password</label>
+                  <label className="text-xs font-black uppercase tracking-widest ml-1 opacity-60">College Name</label>
+                  <div className="relative">
+                    <Landmark className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
+                    <Input 
+                      placeholder="NAME OF YOUR INSTITUTION" 
+                      className="pl-12 h-14 border-4 border-border shadow-[4px_4px_0px_black] bg-white text-black font-bold focus:shadow-none transition-all placeholder:text-zinc-400"
+                      value={collegeName}
+                      onChange={(e) => setCollegeName(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-xs font-black uppercase tracking-widest ml-1 opacity-60">Secret Password</label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
                     <Input 
@@ -117,34 +180,15 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Track Selection */}
-              <div className="space-y-4">
-                <label className="text-sm font-black uppercase tracking-widest ml-1">CHOOSE YOUR BATTLEFIELD (OPTIONAL)</label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {tracks.map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => setTrack(t.id)}
-                      className={`p-4 border-4 transition-all flex flex-col items-center gap-2 group ${
-                        track === t.id 
-                        ? 'border-black bg-black text-white shadow-none' 
-                        : 'border-border bg-white text-black shadow-[4px_4px_0px_black] hover:translate-x-1 hover:translate-y-1 hover:shadow-none'
-                      }`}
-                    >
-                      <t.icon className={`w-6 h-6 ${track === t.id ? 'text-white' : t.color}`} />
-                      <span className="text-[10px] font-black uppercase text-center">{t.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               <Button 
                 type="submit"
+                disabled={loading}
                 variant="secondary"
-                className="w-full h-14 sm:h-16 text-xl sm:text-2xl font-black border-4 border-border shadow-[4px_4px_0px_black] sm:shadow-[6px_6px_0px_black] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all uppercase italic" 
+                className="w-full h-14 sm:h-20 text-xl sm:text-3xl font-black border-4 border-border shadow-[4px_4px_0px_black] sm:shadow-[10px_10px_0px_black] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all uppercase italic bg-accent text-black" 
               >
-                ENLIST NOW <Zap className="ml-2 w-6 h-6 sm:w-8 sm:h-8 fill-current" />
+                {loading ? 'PROCESSING...' : (
+                  <>ENLIST NOW <Zap className="ml-2 w-6 h-6 sm:w-10 sm:h-10 fill-current" /></>
+                )}
               </Button>
             </form>
           </CardContent>
