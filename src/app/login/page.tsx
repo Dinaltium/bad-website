@@ -1,110 +1,122 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { User, Lock, ArrowLeft, LogIn } from 'lucide-react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { LogIn, UserPlus, Shield } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const { login } = useAuth();
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username || !password) {
-      setError('Fill the damn details! 🛑');
+    if (!email || !password) {
+      alert('Please fill in all fields');
       return;
     }
+    login(email);
     router.push('/events');
   };
 
   return (
-    <main className="flex-1 flex items-center justify-center p-6 relative overflow-hidden bg-background grid-pattern">
-      <Link 
-        href="/" 
-        className="absolute top-8 left-8 flex items-center gap-2 text-foreground font-bold hover:translate-x-[-2px] transition-transform"
+    <div className="min-h-[80vh] flex items-center justify-center p-6 bg-background grid-pattern-sm">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="w-full max-w-md"
       >
-        <ArrowLeft className="w-5 h-5 border-2 border-foreground" /> BACK TO SAFETY
-      </Link>
-
-      <motion.div 
-        initial={{ opacity: 0, rotate: -5 }}
-        animate={{ opacity: 1, rotate: 0 }}
-        className="max-w-md w-full relative z-10"
-      >
-        <Card className="border-4 border-foreground shadow-[12px_12px_0px_black] bg-white">
-          <CardHeader className="text-center space-y-2 border-b-4 border-foreground bg-accent">
-            <CardTitle className="text-4xl font-black uppercase italic">Access Portal</CardTitle>
-            <CardDescription className="text-foreground font-bold">Identities required for entry.</CardDescription>
+        <Card className="border-4 border-foreground shadow-[12px_12px_0px_black] p-8">
+          <CardHeader className="p-0 text-center space-y-4 mb-8">
+            <div className="flex justify-center">
+              <div className="bg-primary p-4 border-4 border-foreground shadow-[4px_4px_0px_black] rotate-3">
+                <Shield size={40} className="text-foreground" />
+              </div>
+            </div>
+            <CardTitle className="text-4xl font-black uppercase tracking-tighter italic">
+              {isLogin ? 'WELCOME BACK' : 'JOIN THE FEST'}
+            </CardTitle>
+            <p className="font-bold text-muted-foreground uppercase text-sm">
+              {isLogin ? 'Enter your credentials' : 'Create your student account'}
+            </p>
           </CardHeader>
-          
-          <CardContent className="p-8">
-            <form onSubmit={handleLogin} className="space-y-8">
+
+          <CardContent className="p-0 space-y-6">
+            {/* Tabs */}
+            <div className="flex border-4 border-foreground p-1 bg-muted">
+              <button
+                onClick={() => setIsLogin(true)}
+                className={`flex-1 py-3 font-black uppercase transition-all ${isLogin ? 'bg-accent border-2 border-foreground shadow-[2px_2px_0px_black]' : 'hover:bg-background/50'}`}
+              >
+                Login
+              </button>
+              <button
+                onClick={() => setIsLogin(false)}
+                className={`flex-1 py-3 font-black uppercase transition-all ${!isLogin ? 'bg-primary border-2 border-foreground shadow-[2px_2px_0px_black]' : 'hover:bg-background/50'}`}
+              >
+                Register
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-lg font-black uppercase">Username</label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground z-10" />
-                  <Input 
-                    type="text" 
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    className="h-14 border-4 border-foreground pl-12 text-lg font-bold shadow-[4px_4px_0px_black] focus:shadow-none transition-all"
-                    placeholder="HACKER_X"
-                  />
-                </div>
+                <label className="text-sm font-black uppercase">Email Address</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-4 border-3 border-foreground bg-white outline-none font-bold focus:bg-accent transition-colors"
+                  placeholder="name@college.edu"
+                />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-lg font-black uppercase">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground z-10" />
-                  <Input 
-                    type="password" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="h-14 border-4 border-foreground pl-12 text-lg font-bold shadow-[4px_4px_0px_black] focus:shadow-none transition-all"
-                    placeholder="••••••••"
+              {!isLogin && (
+                <div className="space-y-2">
+                  <label className="text-sm font-black uppercase">Full Name</label>
+                  <input
+                    type="text"
+                    className="w-full p-4 border-3 border-foreground bg-white outline-none font-bold focus:bg-accent transition-colors"
+                    placeholder="Arjun Sharma"
                   />
                 </div>
-              </div>
-
-              {error && (
-                <motion.div 
-                  initial={{ x: -10 }}
-                  animate={{ x: 0 }}
-                  className="bg-destructive text-destructive-foreground p-3 border-4 border-foreground font-black text-center uppercase rotate-1"
-                >
-                  {error}
-                </motion.div>
               )}
+
+              <div className="space-y-2">
+                <label className="text-sm font-black uppercase">Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-4 border-3 border-foreground bg-white outline-none font-bold focus:bg-accent transition-colors"
+                  placeholder="••••••••"
+                />
+              </div>
 
               <Button 
                 type="submit"
-                size="xl"
-                variant="default"
-                animation="shake"
-                className="w-full border-4 border-foreground text-xl py-8"
+                className="w-full py-8 text-xl font-black border-4 border-foreground shadow-[6px_6px_0px_black] uppercase hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
               >
-                <LogIn className="w-6 h-6 mr-2" />
-                ENTER THE FEST
+                {isLogin ? <><LogIn className="mr-2" /> LOGIN</> : <><UserPlus className="mr-2" /> REGISTER</>}
               </Button>
             </form>
 
-            <div className="text-center pt-8">
-              <p className="text-sm font-black uppercase">
-                New here? <span className="text-primary underline cursor-pointer hover:bg-primary hover:text-white px-1">Create an Identity</span>
-              </p>
+            <div className="text-center pt-4">
+              <button 
+                onClick={() => setIsLogin(!isLogin)}
+                className="font-black uppercase text-sm hover:underline decoration-2 underline-offset-4"
+              >
+                {isLogin ? "DON'T HAVE AN ACCOUNT? REGISTER" : "ALREADY REGISTERED? LOGIN"}
+              </button>
             </div>
           </CardContent>
         </Card>
       </motion.div>
-    </main>
+    </div>
   );
 }
-
