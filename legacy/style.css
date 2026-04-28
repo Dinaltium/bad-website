@@ -1,0 +1,58 @@
+body {
+    background-color: yellow;
+    font-family: Comic Sans MS;
+}
+
+/* Home */
+.login-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: red;
+    padding: 5px;
+}
+
+.content {
+    width: 200px;
+    background: green;
+    margin-left: 10px;
+}
+
+.info {
+    margin-top: 100px;
+    margin-left: 300px;
+    background: pink;
+}
+
+/* Login */
+form {
+    margin-left: 200px;
+    margin-top: 20px;
+}
+
+input {
+    width: 50%;
+}
+
+/* Events */
+.event-box {
+    background: orange;
+    width: 150px;
+}
+
+.event-box2 {
+    margin-left: 250px;
+    margin-top: -80px;
+    background: lightblue;
+}
+
+.event-box3 {
+    margin-left: 500px;
+    margin-top: -80px;
+    background: red;
+}
+
+button {
+    background: black;
+    color: white;
+}
