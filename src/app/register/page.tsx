@@ -16,6 +16,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [track, setTrack] = useState('');
+  const [joinHackathon, setJoinHackathon] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
 
@@ -117,27 +118,45 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Track Selection */}
-              <div className="space-y-4">
-                <label className="text-sm font-black uppercase tracking-widest ml-1">CHOOSE YOUR BATTLEFIELD (OPTIONAL)</label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {tracks.map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => setTrack(t.id)}
-                      className={`p-4 border-4 transition-all flex flex-col items-center gap-2 group ${
-                        track === t.id 
-                        ? 'border-black bg-black text-white shadow-none' 
-                        : 'border-border bg-white text-black shadow-[4px_4px_0px_black] hover:translate-x-1 hover:translate-y-1 hover:shadow-none'
-                      }`}
-                    >
-                      <t.icon className={`w-6 h-6 ${track === t.id ? 'text-white' : t.color}`} />
-                      <span className="text-[10px] font-black uppercase text-center">{t.name}</span>
-                    </button>
-                  ))}
+              {/* Hackathon Toggle */}
+              <button
+                type="button"
+                onClick={() => setJoinHackathon(!joinHackathon)}
+                className={`w-full p-4 border-4 border-black flex items-center gap-4 transition-all ${joinHackathon ? 'bg-primary shadow-none translate-x-1 translate-y-1' : 'bg-muted shadow-[4px_4px_0px_black] hover:bg-muted/80'}`}
+              >
+                <div className={`w-8 h-8 border-4 border-black flex items-center justify-center transition-all ${joinHackathon ? 'bg-black' : 'bg-white'}`}>
+                  {joinHackathon && <Zap className="w-5 h-5 text-primary fill-current" />}
                 </div>
-              </div>
+                <span className="font-black uppercase tracking-wider text-sm">WANT TO JOIN HACKATHON?</span>
+              </button>
+
+              {/* Track Selection - Conditional */}
+              {joinHackathon && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="space-y-4 overflow-hidden"
+                >
+                  <label className="text-sm font-black uppercase tracking-widest ml-1">CHOOSE YOUR BATTLEFIELD (REQUIRED)</label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {tracks.map((t) => (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => setTrack(t.id)}
+                        className={`p-4 border-4 transition-all flex flex-col items-center gap-2 group ${
+                          track === t.id 
+                          ? 'border-black bg-black text-white shadow-none' 
+                          : 'border-border bg-white text-black shadow-[4px_4px_0px_black] hover:translate-x-1 hover:translate-y-1 hover:shadow-none'
+                        }`}
+                      >
+                        <t.icon className={`w-6 h-6 ${track === t.id ? 'text-white' : t.color}`} />
+                        <span className="text-[10px] font-black uppercase text-center">{t.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
 
               <Button 
                 type="submit"
