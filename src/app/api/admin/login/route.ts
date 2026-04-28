@@ -4,7 +4,9 @@ import { verifyPassword, generateToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, password } = await request.json();
+    const body = await request.json();
+    console.log('Login attempt for name:', body.name);
+    const { name, password } = body;
 
     if (!name || !password) {
       return NextResponse.json(
@@ -48,10 +50,14 @@ export async function POST(request: NextRequest) {
         type: 'admin',
       },
     });
-  } catch (error) {
-    console.error('Admin login error:', error);
+  } catch (error: any) {
+    console.error('Admin login error details:', {
+      message: error.message,
+      stack: error.stack,
+      error
+    });
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: `Internal server error: ${error.message || 'Unknown error'}` },
       { status: 500 }
     );
   }

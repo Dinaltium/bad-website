@@ -4,7 +4,9 @@ import { verifyPassword, generateToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
-    const { usn, password } = await request.json();
+    const body = await request.json();
+    console.log('Login attempt for USN:', body.usn);
+    const { usn, password } = body;
 
     if (!usn || !password) {
       return NextResponse.json(
@@ -53,10 +55,14 @@ export async function POST(request: NextRequest) {
         type: 'participant',
       },
     });
-  } catch (error) {
-    console.error('Participant login error:', error);
+  } catch (error: any) {
+    console.error('Participant login error details:', {
+      message: error.message,
+      stack: error.stack,
+      error
+    });
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: `Internal server error: ${error.message || 'Unknown error'}` },
       { status: 500 }
     );
   }

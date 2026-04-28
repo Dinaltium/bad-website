@@ -75,10 +75,14 @@ export async function POST(request: NextRequest) {
         type: 'participant',
       },
     }, { status: 201 });
-  } catch (error) {
-    console.error('Participant registration error:', error);
+  } catch (error: any) {
+    console.error('Participant registration error details:', {
+      message: error.message,
+      stack: error.stack,
+      error
+    });
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: `Internal server error: ${error.message || 'Unknown error'}` },
       { status: 500 }
     );
   }
