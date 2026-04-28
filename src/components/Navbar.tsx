@@ -42,6 +42,7 @@ export default function Navbar() {
           <Link href="/events" className="cursor-pointer hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Events</Link>
           <Link href="/schedule" className="cursor-pointer hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Schedule</Link>
           <Link href="/hackathon" className="cursor-pointer hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Hackathon</Link>
+          <Link href="/register" className="cursor-pointer hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Join Us</Link>
         </div>
 
         <div className="flex items-center gap-4">
