@@ -12,6 +12,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import gsap from 'gsap';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
+}
 
 const categories = ['All', 'Technical', 'Gaming', 'Creative', 'Fun'];
 
@@ -96,10 +104,90 @@ export default function CompleteEventsPage() {
   const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
   const [showNotification, setShowNotification] = useState(false);
 
+  useEffect(() => {
+    // Initialize Lenis
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    // Request Animation Frame for Lenis
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+
+    // Sync ScrollTrigger with Lenis
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+
+      // Initial set to ensure state
+      gsap.set(['.hero-badge', '.hero-title-line', '.hero-desc', '.hero-cta', '.hero-image', '.stat-card'], { 
+        opacity: 0 
+      });
+
+      tl.fromTo('.hero-badge', { y: -50, opacity: 0, rotate: -10 }, { y: 0, opacity: 1, rotate: -2, duration: 1 })
+        .fromTo('.hero-title-line', { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.2 }, '-=0.5')
+        .fromTo('.hero-desc', { x: -100, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8 }, '-=0.5')
+        .fromTo('.hero-cta', { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5 }, '-=0.3')
+        .fromTo('.hero-image', { x: 200, opacity: 0, rotate: 10 }, { x: 0, opacity: 1, rotate: -3, duration: 1.2 }, '-=1')
+        .fromTo('.stat-card', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1 }, '-=0.5');
+
+      // Scroll Triggered Animations
+      gsap.from('.event-card', {
+        scrollTrigger: {
+          trigger: '.events-grid',
+          start: 'top 80%',
+        },
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'power3.out'
+      });
+
+      gsap.from('.schedule-item', {
+        scrollTrigger: {
+          trigger: '#schedule',
+          start: 'top 70%',
+        },
+        x: (i) => i % 2 === 0 ? -100 : 100,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.2,
+        ease: 'power4.out'
+      });
+    });
+
+    // Make lenis accessible for scrollToSection
+    (window as any).lenis = lenis;
+
+    return () => {
+      ctx.revert();
+      lenis.destroy();
+      gsap.ticker.remove(lenis.raf);
+    };
+  }, []);
+
   const filteredEvents = events.filter(e => 
     (selectedCategory === 'All' || e.category === selectedCategory) &&
     e.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const scrollToSection = (id: string) => {
+    const lenis = (window as any).lenis;
+    if (lenis) {
+      lenis.scrollTo(id, { offset: -80, duration: 1.5 });
+    }
+  };
 
   const handleRegister = (id: number) => {
     if (!registeredEvents.includes(id)) {
@@ -114,42 +202,46 @@ export default function CompleteEventsPage() {
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-white border-b-4 border-border px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-3xl font-black uppercase tracking-tighter hover:skew-x-[-10deg] transition-transform text-black">
+          <Link href="/" className="text-3xl font-black uppercase tracking-tighter hover:skew-x-[-10deg] transition-transform text-black animate-glitch" data-text="PACEFEST">
             PACE<span className="text-primary italic">FEST</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 font-black uppercase text-black">
-            <Link href="#events" className="hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Events</Link>
-            <Link href="#schedule" className="hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Schedule</Link>
-            <Link href="#stats" className="hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Stats</Link>
+            <button onClick={() => scrollToSection('#events')} className="cursor-pointer hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Events</button>
+            <button onClick={() => scrollToSection('#schedule')} className="cursor-pointer hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Schedule</button>
+            <button onClick={() => scrollToSection('#stats')} className="cursor-pointer hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Stats</button>
           </div>
-          <Button variant="default" className="border-4 border-border shadow-[4px_4px_0px_black] uppercase font-black" animation="wiggle">
-            Login Portal
-          </Button>
+          <Link href="/login">
+            <Button variant="default" className="border-4 border-border shadow-[4px_4px_0px_black] uppercase font-black" animation="wiggle">
+              Login Portal
+            </Button>
+          </Link>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="px-6 pt-20 pb-32 max-w-7xl mx-auto">
+      <section className="px-6 min-h-screen flex flex-col justify-center max-w-7xl mx-auto py-20">
         <div className="grid md:grid-cols-[1.4fr_1fr] gap-10 items-center">
           <div className="space-y-10 relative z-10">
-            <Badge variant="accent" className="text-xl py-2 px-6 border-4 border-border shadow-[4px_4px_0px_black] uppercase font-black rotate-[-2deg]">
-              OCT 12-14, 2026 • UNIVERSITY CAMPUS
-            </Badge>
+            <div className="hero-badge inline-block">
+              <Badge variant="accent" className="text-xl py-2 px-6 border-4 border-border shadow-[4px_4px_0px_black] uppercase font-black rotate-[-2deg]">
+                OCT 12-14, 2026 • UNIVERSITY CAMPUS
+              </Badge>
+            </div>
             <h1 className="text-7xl md:text-[9rem] font-black leading-[0.8] uppercase tracking-tighter drop-shadow-[10px_10px_0px_#000]">
-              LIMITLESS <br />
-              <span className="text-primary italic">ENERGY.</span>
+              <div className="hero-title-line animate-glitch cursor-default" data-text="LIMITLESS">LIMITLESS</div>
+              <div className="hero-title-line text-primary italic animate-glitch cursor-default" data-text="ENERGY.">ENERGY.</div>
             </h1>
-            <p className="text-2xl font-bold bg-white border-4 border-border p-6 shadow-[8px_8px_0px_black] rotate-1 max-w-lg text-black">
+            <p className="hero-desc text-2xl font-bold bg-white border-4 border-border p-6 shadow-[8px_8px_0px_black] rotate-1 max-w-lg text-black">
               The biggest technical festival of the decade is here. Join 50,000+ students in a journey of pure innovation.
             </p>
-            <div className="flex gap-6 pt-6">
+            <div className="hero-cta flex gap-6 pt-6">
               <Button size="xl" className="border-4 border-border text-2xl py-8 px-12" animation="pop">
                 GET TICKETS <Zap className="ml-2 w-6 h-6 fill-current" />
               </Button>
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative hero-image">
             <div className="w-full aspect-square bg-accent border-4 border-border shadow-[20px_20px_0px_black] flex items-center justify-center -rotate-3 overflow-hidden relative group">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
               <Rocket className="w-48 h-48 group-hover:translate-y-[-20px] group-hover:translate-x-[20px] transition-transform duration-500" />
@@ -162,31 +254,52 @@ export default function CompleteEventsPage() {
       </section>
 
       {/* Stats Section */}
-      <section id="stats" className="bg-secondary border-y-4 border-border py-20 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
-          {[
-            { label: 'Registrations', value: '12,450', icon: Users },
-            { label: 'Total Prize Pool', value: '$50,000', icon: Trophy },
-            { label: 'Colleges', value: '120+', icon: MapPin },
-            { label: 'Experience', value: '10 YRS', icon: Star }
-          ].map((stat, i) => (
-            <Card key={i} className="border-4 border-border shadow-[8px_8px_0px_black] bg-white hover:scale-105 transition-transform rotate-[1deg] text-black">
-              <CardHeader className="flex flex-row items-center gap-4">
-                <div className="p-3 bg-accent border-2 border-border shadow-[2px_2px_0px_black] text-black">
-                  <stat.icon className="w-8 h-8" />
-                </div>
-                <div>
-                  <div className="text-3xl font-black">{stat.value}</div>
-                  <div className="text-sm font-bold uppercase">{stat.label}</div>
-                </div>
-              </CardHeader>
-            </Card>
-          ))}
+      <section id="stats" className="bg-secondary border-y-4 border-border min-h-screen flex flex-col justify-center px-6 py-20 relative overflow-hidden">
+        {/* Background Decorative Text */}
+        <div className="absolute top-10 left-[-5%] text-[15rem] font-black uppercase text-black/5 rotate-[-5deg] select-none pointer-events-none">
+          NUMBERS
+        </div>
+        <div className="absolute bottom-10 right-[-5%] text-[15rem] font-black uppercase text-black/5 rotate-[5deg] select-none pointer-events-none">
+          GLORY
+        </div>
+
+        <div className="max-w-7xl mx-auto w-full space-y-12 relative z-10">
+          <div className="text-center space-y-4">
+            <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter text-black underline decoration-white decoration-8">The Hall of Data</h2>
+            <p className="text-2xl font-bold text-black uppercase italic">By the numbers, we are unstoppable.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {[
+              { label: 'Registrations', value: '12,450', icon: Users, color: 'bg-accent' },
+              { label: 'Total Prize Pool', value: '$50,000', icon: Trophy, color: 'bg-primary' },
+              { label: 'Colleges', value: '120+', icon: MapPin, color: 'bg-neon-pink' },
+              { label: 'Experience', value: '10 YRS', icon: Star, color: 'bg-neon-blue' },
+              { label: 'Coffee Consumed', value: '5,000L', icon: Zap, color: 'bg-neon-green' },
+              { label: 'Lines of Code', value: '2.5M+', icon: Code, color: 'bg-white' },
+              { label: 'Bugs Squashed', value: '9,999+', icon: Rocket, color: 'bg-secondary' },
+              { label: 'Pizzas Eaten', value: '1,200', icon: Gamepad2, color: 'bg-accent' }
+            ].map((stat, i) => (
+              <div key={i} className="stat-card">
+                <Card className="border-4 border-border shadow-[8px_8px_0px_black] bg-white hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all rotate-[1deg] text-black">
+                  <CardHeader className="flex flex-row items-center gap-4">
+                    <div className={`p-3 ${stat.color} border-2 border-border shadow-[2px_2px_0px_black] text-black`}>
+                      <stat.icon className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-black">{stat.value}</div>
+                      <div className="text-sm font-bold uppercase">{stat.label}</div>
+                    </div>
+                  </CardHeader>
+                </Card>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Events Hub */}
-      <section id="events" className="px-6 py-32 max-w-7xl mx-auto space-y-20">
+      <section id="events" className="px-6 min-h-screen flex flex-col justify-center max-w-7xl mx-auto space-y-20 py-20">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
           <div className="space-y-4">
             <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter underline decoration-primary decoration-8">Events Hub</h2>
@@ -221,55 +334,46 @@ export default function CompleteEventsPage() {
         </div>
 
         {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          <AnimatePresence mode="popLayout">
-            {filteredEvents.map((event) => (
-              <motion.div
-                key={event.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="h-full"
-              >
-                <Card className="h-full border-4 border-border shadow-[10px_10px_0px_black] bg-white flex flex-col hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all group text-black">
-                  <CardHeader className={`border-b-4 border-border ${event.color} p-6 relative overflow-hidden text-black`}>
-                    <Badge className="absolute top-4 right-4 border-2 border-border bg-white text-black font-black uppercase italic">
-                      {event.tag}
-                    </Badge>
-                    <CardTitle className="text-3xl font-black uppercase mt-4 group-hover:translate-x-2 transition-transform">{event.title}</CardTitle>
-                    <CardDescription className="text-black font-bold uppercase">{event.category}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-6 space-y-6 flex-1 text-black">
-                    <p className="text-lg font-bold leading-tight text-black">{event.description}</p>
-                    <div className="space-y-3 font-bold text-black">
-                      <div className="flex items-center gap-2"><Calendar className="w-5 h-5" /> {event.date}</div>
-                      <div className="flex items-center gap-2"><Clock className="w-5 h-5" /> {event.time}</div>
-                      <div className="flex items-center gap-2"><MapPin className="w-5 h-5" /> {event.location}</div>
-                    </div>
-                    <div className="pt-4 border-t-2 border-dashed border-border flex items-center justify-between text-black">
-                      <span className="text-sm font-black uppercase italic">Grand Prize:</span>
-                      <span className="text-2xl font-black text-primary underline decoration-4 underline-offset-4">{event.prize}</span>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="p-6 pt-0">
-                    <Button 
-                      className="w-full border-4 border-border text-lg font-black italic h-14"
-                      animation="pop"
-                      onClick={() => handleRegister(event.id)}
-                      variant={registeredEvents.includes(event.id) ? 'secondary' : 'default'}
-                    >
-                      {registeredEvents.includes(event.id) ? (
-                        <>REGISTERED <Check className="ml-2 w-6 h-6" /></>
-                      ) : (
-                        <>REGISTER NOW <ArrowUpRight className="ml-2 w-6 h-6" /></>
-                      )}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 events-grid">
+          {filteredEvents.map((event) => (
+            <div key={event.id} className="event-card">
+              <Card className="h-full border-4 border-border shadow-[10px_10px_0px_black] bg-white flex flex-col hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all group text-black">
+                <CardHeader className={`border-b-4 border-border ${event.color} p-6 relative overflow-hidden text-black`}>
+                  <Badge className="absolute top-4 right-4 border-2 border-border bg-white text-black font-black uppercase italic">
+                    {event.tag}
+                  </Badge>
+                  <CardTitle className="text-3xl font-black uppercase mt-4 group-hover:translate-x-2 transition-transform">{event.title}</CardTitle>
+                  <CardDescription className="text-black font-bold uppercase">{event.category}</CardDescription>
+                </CardHeader>
+                <CardContent className="p-6 space-y-6 flex-1 text-black">
+                  <p className="text-lg font-bold leading-tight text-black">{event.description}</p>
+                  <div className="space-y-3 font-bold text-black">
+                    <div className="flex items-center gap-2"><Calendar className="w-5 h-5" /> {event.date}</div>
+                    <div className="flex items-center gap-2"><Clock className="w-5 h-5" /> {event.time}</div>
+                    <div className="flex items-center gap-2"><MapPin className="w-5 h-5" /> {event.location}</div>
+                  </div>
+                  <div className="pt-4 border-t-2 border-dashed border-border flex items-center justify-between text-black">
+                    <span className="text-sm font-black uppercase italic">Grand Prize:</span>
+                    <span className="text-2xl font-black text-primary underline decoration-4 underline-offset-4">{event.prize}</span>
+                  </div>
+                </CardContent>
+                <CardFooter className="p-6 pt-0">
+                  <Button 
+                    className="w-full border-4 border-border text-lg font-black italic h-14"
+                    animation="pop"
+                    onClick={() => handleRegister(event.id)}
+                    variant={registeredEvents.includes(event.id) ? 'secondary' : 'default'}
+                  >
+                    {registeredEvents.includes(event.id) ? (
+                      <>REGISTERED <Check className="ml-2 w-6 h-6" /></>
+                    ) : (
+                      <>REGISTER NOW <ArrowUpRight className="ml-2 w-6 h-6" /></>
+                    )}
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -294,40 +398,46 @@ export default function CompleteEventsPage() {
       </AnimatePresence>
 
       {/* Schedule Section */}
-      <section id="schedule" className="px-6 py-32 max-w-4xl mx-auto space-y-20">
+      <section id="schedule" className="px-6 min-h-screen flex flex-col justify-center max-w-4xl mx-auto space-y-20 py-20">
         <h2 className="text-6xl font-black uppercase tracking-tighter text-center">The Battle Plan</h2>
-        <div className="space-y-8 relative">
-          <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-border -translate-x-1/2 hidden md:block"></div>
+        <div className="space-y-10 relative">
+          <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-2 bg-border hidden md:block"></div>
           {[
-            { day: 'DAY 01', title: 'The Awakening', desc: 'Opening Ceremony & Hackathon Kickoff', icon: Zap, color: 'bg-primary' },
-            { day: 'DAY 02', title: 'Peak Performance', desc: 'Gaming Finals & Tech Talk Series', icon: Rocket, color: 'bg-secondary' },
-            { day: 'DAY 03', title: 'The Finale', desc: 'Award Night & Cultural Explosion', icon: Trophy, color: 'bg-accent' }
+            { day: 'Day 1', title: 'The Awakening', events: ['Check-in', 'Opening Ceremony', 'Hackathon Kickoff'], icon: Zap, color: 'bg-primary' },
+            { day: 'Day 2', title: 'The Grind', events: ['Gaming Heats', 'Workshops', 'Creative Jam'], icon: Rocket, color: 'bg-secondary' },
+            { day: 'Day 3', title: 'The Glory', events: ['Final Battles', 'Award Night', 'After Party'], icon: Trophy, color: 'bg-accent' },
           ].map((item, i) => (
-            <div key={i} className={`flex flex-col md:flex-row items-center gap-10 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+            <div key={i} className={`schedule-item relative flex items-center gap-10 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
               <div className="flex-1 text-center md:text-right">
                 {i % 2 === 0 ? (
                   <div className="space-y-2">
                     <div className="text-4xl font-black text-primary">{item.day}</div>
                     <div className="text-2xl font-black uppercase">{item.title}</div>
-                    <p className="font-bold">{item.desc}</p>
+                    <ul className="text-lg font-bold space-y-1 mt-4">
+                      {item.events.map((e, idx) => <li key={idx}>• {e}</li>)}
+                    </ul>
                   </div>
                 ) : null}
               </div>
               <div className={`w-20 h-20 rounded-full border-4 border-border ${item.color} flex items-center justify-center shadow-[4px_4px_0px_black] z-10 shrink-0`}>
-                <item.icon className="w-10 h-10" />
+                <item.icon className="w-10 h-10 text-black" />
               </div>
               <div className="flex-1 text-center md:text-left">
                 {i % 2 !== 0 ? (
                   <div className="space-y-2">
                     <div className="text-4xl font-black text-secondary">{item.day}</div>
                     <div className="text-2xl font-black uppercase">{item.title}</div>
-                    <p className="font-bold">{item.desc}</p>
+                    <ul className="text-lg font-bold space-y-1 mt-4">
+                      {item.events.map((e, idx) => <li key={idx}>• {e}</li>)}
+                    </ul>
                   </div>
                 ) : (
                   <div className="md:hidden">
                     <div className="text-4xl font-black text-primary">{item.day}</div>
                     <div className="text-2xl font-black uppercase">{item.title}</div>
-                    <p className="font-bold">{item.desc}</p>
+                    <ul className="text-lg font-bold space-y-1 mt-4">
+                      {item.events.map((e, idx) => <li key={idx}>• {e}</li>)}
+                    </ul>
                   </div>
                 )}
               </div>
@@ -346,10 +456,10 @@ export default function CompleteEventsPage() {
           ))}
         </div>
         <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
-          <div className="text-background text-3xl font-black uppercase tracking-widest">STAY CONNECTED</div>
+          <div className="text-black text-3xl font-black uppercase tracking-widest">STAY CONNECTED</div>
           <div className="flex gap-10">
             {['INSTAGRAM', 'TWITTER', 'LINKEDIN', 'DISCORD'].map(social => (
-              <a key={social} href="#" className="text-white font-black text-xl hover:text-primary hover:skew-x-[-12deg] transition-all">
+              <a key={social} href="#" className="text-black font-black text-xl hover:text-primary hover:skew-x-[-12deg] transition-all">
                 {social}
               </a>
             ))}
