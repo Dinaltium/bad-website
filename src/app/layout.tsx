@@ -1,29 +1,23 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
+import SplashLoader from "@/components/SplashLoader";
 
-const syne = Syne({
-  variable: "--font-syne",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
-});
-
-const jetBrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "PACE Fest 2026 | Technical Festival",
-  description: "The biggest technical festival of the year. Compete, innovate, and win.",
+  title: "PACEFEST 2026 | LIMITLESS ENERGY",
+  description: "The biggest technical festival of the decade.",
 };
 
 export default function RootLayout({
@@ -32,9 +26,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${syne.variable} ${dmSans.variable} ${jetBrainsMono.variable} h-full antialiased`}>
-      <body className="min-h-screen flex flex-col font-dm-sans bg-background selection:bg-accent selection:text-accent-foreground">
+    <html lang="en" className={`${outfit.variable} ${inter.variable} h-full antialiased`}>
+      <body className="min-h-screen flex flex-col font-inter bg-background selection:bg-primary selection:text-white">
         <AuthProvider>
+          <SplashLoader />
           <Navbar />
           <main className="flex-1">
             {children}

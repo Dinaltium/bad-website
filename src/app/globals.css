@@ -730,11 +730,78 @@ body {
 
 /* Glitch effect */
 @keyframes glitch {
-  0%, 100% { transform: translate(0); }
-  20% { transform: translate(-2px, 2px); }
-  40% { transform: translate(-2px, -2px); }
-  60% { transform: translate(2px, 2px); }
-  80% { transform: translate(2px, -2px); }
+  0% { transform: translate(0); }
+  20% { transform: translate(-3px, 3px); }
+  40% { transform: translate(-3px, -3px); }
+  60% { transform: translate(3px, 3px); }
+  80% { transform: translate(3px, -3px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitch-color-1 {
+  0% { transform: translate(0); }
+  20% { transform: translate(4px, -2px); }
+  40% { transform: translate(-4px, 2px); }
+  60% { transform: translate(4px, 2px); }
+  80% { transform: translate(-4px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitch-color-2 {
+  0% { transform: translate(0); }
+  20% { transform: translate(-4px, 2px); }
+  40% { transform: translate(4px, -2px); }
+  60% { transform: translate(-4px, -2px); }
+  80% { transform: translate(4px, 2px); }
+  100% { transform: translate(0); }
+}
+
+.animate-glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.animate-glitch::before,
+.animate-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.animate-glitch:hover::before {
+  color: #ff00c1;
+  z-index: -1;
+  animation: glitch-color-1 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+}
+
+.animate-glitch:hover::after {
+  color: #00fff9;
+  z-index: -2;
+  animation: glitch-color-2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+}
+
+.animate-glitch:hover {
+  animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+}
+
+.animate-glitch-entrance::before {
+  color: #ff00c1;
+  z-index: -1;
+  animation: glitch-color-1 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.animate-glitch-entrance::after {
+  color: #00fff9;
+  z-index: -2;
+  animation: glitch-color-2 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
+}
+
+.animate-glitch-entrance {
+  animation: glitch 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 /* Float animation */
@@ -796,6 +863,10 @@ body {
 
 .animate-marquee {
   animation: marquee 20s linear infinite;
+}
+
+.animate-glitch {
+  animation: glitch 300ms infinite;
 }
 
 .animate-marquee-fast {
