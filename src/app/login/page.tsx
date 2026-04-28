@@ -122,7 +122,7 @@ export default function LoginPage() {
 
           <CardFooter className="bg-muted p-6 border-t-4 border-border flex justify-center">
             <p className="font-bold text-sm">
-              NEW TO THE FEST? <Link href="#" className="text-primary underline font-black hover:text-primary/80">RECRUIT ME</Link>
+              NEW TO THE FEST? <Link href="/register" className="text-primary underline font-black hover:text-primary/80">RECRUIT ME</Link>
             </p>
           </CardFooter>
         </Card>

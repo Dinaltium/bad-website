@@ -788,6 +788,22 @@ body {
   animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
 }
 
+.animate-glitch-entrance::before {
+  color: #ff00c1;
+  z-index: -1;
+  animation: glitch-color-1 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.animate-glitch-entrance::after {
+  color: #00fff9;
+  z-index: -2;
+  animation: glitch-color-2 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
+}
+
+.animate-glitch-entrance {
+  animation: glitch 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
 /* Float animation */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
