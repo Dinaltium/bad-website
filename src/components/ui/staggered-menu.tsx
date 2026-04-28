@@ -542,10 +542,11 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 .sm-scope [data-position='left'] .sm-prelayers { right: auto; left: 0; }
 .sm-scope .sm-prelayer { position: absolute; top: 0; right: 0; height: 100%; width: 100%; transform: translateX(0); }
 .sm-scope .sm-panel-inner { flex: 1; display: flex; flex-direction: column; gap: 2rem; }
+.sm-scope .sm-panel-list { counter-reset: smItem; }
 .sm-scope .sm-socials { margin-top: auto; padding-top: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
 .sm-scope .sm-socials-title { margin: 0; font-size: 1.5rem; font-weight: 900; color: var(--sm-accent, #ff0000); background: black; padding: 0.25rem 1rem; width: fit-content; }
 .sm-scope .sm-socials-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: row; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
-.sm-scope .sm-panel-list[data-numbering] .sm-panel-item::after { counter-increment: smItem; content: counter(smItem, decimal-leading-zero); position: absolute; top: 0.1em; right: 2.8em; font-size: 24px; font-weight: 900; color: var(--sm-accent, #ff0000); letter-spacing: 0; pointer-events: none; user-select: none; opacity: var(--sm-num-opacity, 0); -webkit-text-stroke: 1px black; }
+.sm-scope .sm-panel-list[data-numbering] .sm-panel-item::after { counter-increment: smItem; content: counter(smItem, decimal-leading-zero); position: absolute; top: 0.1em; right: 0.5em; font-size: 24px; font-weight: 900; color: var(--sm-accent, #ff0000); letter-spacing: 0; pointer-events: none; user-select: none; opacity: var(--sm-num-opacity, 0); -webkit-text-stroke: 1px black; }
 @media (max-width: 1024px) { .sm-scope .staggered-menu-panel { width: 100%; left: 0; right: 0; } }
       `}</style>
     </div>

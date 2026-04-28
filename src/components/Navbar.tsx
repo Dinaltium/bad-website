@@ -18,6 +18,7 @@ export default function Navbar() {
   }, []);
 
   const menuItems = [
+    { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
     { label: 'Events', ariaLabel: 'View events', link: '/events' },
     { label: 'Schedule', ariaLabel: 'View festival schedule', link: '/schedule' },
     { label: 'Hackathon', ariaLabel: 'Hackathon portal', link: '/hackathon' },
