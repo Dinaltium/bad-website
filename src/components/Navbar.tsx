@@ -23,6 +23,7 @@ export default function Navbar() {
     { label: 'Schedule', ariaLabel: 'View festival schedule', link: '/schedule' },
     { label: 'Hackathon', ariaLabel: 'Hackathon portal', link: '/hackathon' },
     { label: 'Join Us', ariaLabel: 'Register for fest', link: '/register' },
+    { label: isLoggedIn ? 'Dashboard' : 'Login', ariaLabel: 'Login to portal', link: isLoggedIn ? '/dashboard' : '/login' },
   ];
 
   const socialItems = [
@@ -33,8 +34,14 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 w-full z-[100] bg-white border-b-4 border-border px-6 py-4 flex items-center justify-between">
       <div className="max-w-7xl w-full mx-auto flex items-center justify-between">
-        <Link href="/" className={`text-2xl sm:text-3xl font-black uppercase tracking-tighter hover:skew-x-[-10deg] transition-transform text-black animate-glitch ${isGlitching ? 'animate-glitch-entrance' : ''}`} data-text="PACEFEST">
-          PACE<span className="text-primary italic">FEST</span>
+        <Link 
+          href="/" 
+          className={`text-2xl sm:text-3xl font-black uppercase tracking-tighter hover:skew-x-[-10deg] transition-transform text-black animate-glitch group ${isGlitching ? 'animate-glitch-entrance' : ''}`} 
+          data-text="PACEFEST"
+        >
+          <span className="group-hover:animate-glitch-active">
+            PACE<span className="text-primary italic">FEST</span>
+          </span>
         </Link>
         
         {/* Desktop Links */}

@@ -772,19 +772,19 @@ body {
   opacity: 0.8;
 }
 
-.animate-glitch:hover::before {
+.animate-glitch-active::before {
   color: #ff00c1;
   z-index: -1;
   animation: glitch-color-1 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
 }
 
-.animate-glitch:hover::after {
+.animate-glitch-active::after {
   color: #00fff9;
   z-index: -2;
   animation: glitch-color-2 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
 }
 
-.animate-glitch:hover {
+.animate-glitch-active {
   animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
 }
 

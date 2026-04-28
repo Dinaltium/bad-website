@@ -265,9 +265,9 @@ export default function CompleteEventsPage() {
                 OCT 12-14, 2026 • UNIVERSITY CAMPUS
               </Badge>
             </div>
-            <h1 className="text-6xl sm:text-7xl md:text-[8rem] lg:text-[9rem] font-black leading-[0.9] md:leading-[0.85] uppercase tracking-tighter drop-shadow-[4px_4px_0px_#000] md:drop-shadow-[10px_10px_0px_#000]">
-              <div className="hero-title-line animate-glitch cursor-default" data-text="LIMITLESS">LIMITLESS</div>
-              <div className="hero-title-line text-primary italic animate-glitch cursor-default" data-text="ENERGY.">ENERGY.</div>
+            <h1 className="text-6xl sm:text-7xl md:text-[8rem] lg:text-[9rem] font-black leading-[0.9] md:leading-[0.85] uppercase tracking-tighter drop-shadow-[4px_4px_0px_#000] md:drop-shadow-[10px_10px_0px_#000] group">
+              <div className="hero-title-line animate-glitch group-hover:animate-glitch-active cursor-default" data-text="LIMITLESS">LIMITLESS</div>
+              <div className="hero-title-line text-primary italic animate-glitch group-hover:animate-glitch-active cursor-default" data-text="ENERGY.">ENERGY.</div>
             </h1>
             <p className="hero-desc text-lg md:text-2xl font-bold bg-white border-4 border-border p-4 md:p-6 shadow-[4px_4px_0px_black] md:shadow-[8px_8px_0px_black] rotate-1 max-w-lg text-black">
               The biggest technical festival of the decade is here. Join 50,000+ students in a journey of pure innovation.
