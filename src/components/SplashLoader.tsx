@@ -41,7 +41,13 @@ export default function SplashLoader() {
       });
     }, interval);
 
-    // Add scroll lock
+    return () => {
+      clearInterval(timer);
+    };
+  }, [pathname, searchParams]);
+
+  // Separate effect for scroll lock to avoid dependency array size changes
+  useEffect(() => {
     if (isVisible) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -49,10 +55,9 @@ export default function SplashLoader() {
     }
 
     return () => {
-      clearInterval(timer);
       document.body.style.overflow = 'unset';
     };
-  }, [pathname, searchParams, isVisible]);
+  }, [isVisible]);
 
   useEffect(() => {
     const statusTimer = setInterval(() => {
