@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
 import SplashLoader from "@/components/SplashLoader";
+import Chatbot from "@/components/Chatbot";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -34,6 +35,7 @@ export default function RootLayout({
           <main className="flex-1">
             {children}
           </main>
+          <Chatbot />
         </AuthProvider>
       </body>
     </html>
