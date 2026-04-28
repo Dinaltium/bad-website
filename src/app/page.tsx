@@ -257,7 +257,7 @@ export default function CompleteEventsPage() {
     <div className="min-h-screen bg-background grid-pattern text-foreground selection:bg-primary selection:text-white">
 
       {/* Hero Section */}
-      <section className="px-6 min-h-[80vh] md:min-h-screen flex flex-col justify-center max-w-7xl mx-auto py-10 md:py-20">
+      <section className="px-6 min-h-[80vh] md:min-h-screen flex flex-col justify-center max-w-7xl mx-auto pt-32 pb-10 md:pt-40 md:pb-20">
         <div className="grid md:grid-cols-[1.4fr_1fr] gap-10 items-center">
           <div className="space-y-10 relative z-10">
             <div className="hero-badge inline-block">
@@ -265,7 +265,7 @@ export default function CompleteEventsPage() {
                 OCT 12-14, 2026 • UNIVERSITY CAMPUS
               </Badge>
             </div>
-            <h1 className="text-4xl sm:text-7xl md:text-[8rem] lg:text-[9rem] font-black leading-[0.9] md:leading-[0.85] uppercase tracking-tighter drop-shadow-[4px_4px_0px_#000] md:drop-shadow-[10px_10px_0px_#000]">
+            <h1 className="text-6xl sm:text-7xl md:text-[8rem] lg:text-[9rem] font-black leading-[0.9] md:leading-[0.85] uppercase tracking-tighter drop-shadow-[4px_4px_0px_#000] md:drop-shadow-[10px_10px_0px_#000]">
               <div className="hero-title-line animate-glitch cursor-default" data-text="LIMITLESS">LIMITLESS</div>
               <div className="hero-title-line text-primary italic animate-glitch cursor-default" data-text="ENERGY.">ENERGY.</div>
             </h1>
@@ -284,9 +284,9 @@ export default function CompleteEventsPage() {
           <div className="relative hero-image">
             <div className="w-full aspect-square bg-accent border-4 border-border shadow-[20px_20px_0px_black] flex items-center justify-center -rotate-3 overflow-hidden relative group">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
-              <Rocket className="w-48 h-48 group-hover:translate-y-[-20px] group-hover:translate-x-[20px] transition-transform duration-500" />
-              <div className="absolute top-10 right-10 bg-white border-4 border-border p-4 shadow-[4px_4px_0px_black] rotate-6">
-                <span className="text-4xl font-black italic text-black">50+ EVENTS</span>
+              <Rocket className="w-32 h-32 sm:w-48 sm:h-48 group-hover:translate-y-[-20px] group-hover:translate-x-[20px] transition-transform duration-500" />
+              <div className="absolute top-6 sm:top-10 right-6 sm:right-10 bg-white border-4 border-border p-2 sm:p-4 shadow-[4px_4px_0px_black] rotate-6">
+                <span className="text-xl sm:text-4xl font-black italic text-black">50+ EVENTS</span>
               </div>
             </div>
           </div>
@@ -327,8 +327,8 @@ export default function CompleteEventsPage() {
                       <stat.icon className="w-8 h-8" />
                     </div>
                     <div>
-                      <div className="text-3xl font-black">{stat.value}</div>
-                      <div className="text-sm font-bold uppercase">{stat.label}</div>
+                      <div className="text-2xl md:text-3xl font-black">{stat.value}</div>
+                      <div className="text-[10px] md:text-sm font-bold uppercase">{stat.label}</div>
                     </div>
                   </CardHeader>
                 </Card>
@@ -519,11 +519,15 @@ export default function CompleteEventsPage() {
         <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
           <div className="text-background text-xl sm:text-3xl font-black uppercase tracking-widest">STAY CONNECTED</div>
           <div className="flex flex-wrap justify-center gap-6 sm:gap-10 px-4">
-            {['INSTAGRAM', 'TWITTER', 'LINKEDIN', 'DISCORD'].map(social => (
-              <a key={social} href="#" className="text-background font-black text-sm sm:text-xl hover:text-primary hover:skew-x-[-12deg] transition-all">
-                {social}
-              </a>
-            ))}
+            <a href="https://www.instagram.com/pacemangalore_official/" target="_blank" rel="noopener noreferrer" className="text-background font-black text-sm sm:text-xl hover:text-primary hover:skew-x-[-12deg] transition-all">
+              INSTAGRAM
+            </a>
+            <a href="https://www.linkedin.com/school/p-a-college-of-engineering-mangalore/" target="_blank" rel="noopener noreferrer" className="text-background font-black text-sm sm:text-xl hover:text-primary hover:skew-x-[-12deg] transition-all">
+              LINKEDIN
+            </a>
+            <a href="#" className="text-background font-black text-sm sm:text-xl hover:text-primary hover:skew-x-[-12deg] transition-all">
+              DISCORD
+            </a>
           </div>
         </div>
       </footer>

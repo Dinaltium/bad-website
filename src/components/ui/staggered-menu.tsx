@@ -396,11 +396,11 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
         data-position={position}
         data-open={open || undefined}
       >
-        {/* Toggle Button - Made pointer-events-auto */}
-        <div className="pointer-events-auto">
+        {/* Toggle Button - Elevated z-index to be above panel */}
+        <div className="absolute top-0 right-0 z-[100] pointer-events-auto">
           <button
             ref={toggleBtnRef}
-            className={`sm-toggle relative inline-flex items-center gap-[0.3rem] bg-white border-4 border-black px-4 py-2 shadow-[4px_4px_0px_black] cursor-pointer font-black leading-none overflow-visible ${
+            className={`sm-toggle relative inline-flex items-center gap-[0.3rem] bg-white border-4 border-black px-4 py-2 mt-4 mr-4 shadow-[4px_4px_0px_black] cursor-pointer font-black leading-none overflow-visible ${
               open ? 'text-black' : 'text-black'
             } uppercase italic tracking-tighter transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none`}
             aria-label={open ? 'Close menu' : 'Open menu'}

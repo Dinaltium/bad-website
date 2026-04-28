@@ -25,15 +25,14 @@ export default function Navbar() {
   ];
 
   const socialItems = [
-    { label: 'Instagram', link: '#' },
-    { label: 'LinkedIn', link: '#' },
-    { label: 'Twitter', link: '#' },
+    { label: 'Instagram', link: 'https://www.instagram.com/pacemangalore_official/' },
+    { label: 'LinkedIn', link: 'https://www.linkedin.com/school/p-a-college-of-engineering-mangalore/' },
   ];
 
   return (
     <nav className="fixed top-0 left-0 w-full z-[100] bg-white border-b-4 border-border px-6 py-4 flex items-center justify-between">
       <div className="max-w-7xl w-full mx-auto flex items-center justify-between">
-        <Link href="/" className={`text-3xl font-black uppercase tracking-tighter hover:skew-x-[-10deg] transition-transform text-black animate-glitch ${isGlitching ? 'animate-glitch-entrance' : ''}`} data-text="PACEFEST">
+        <Link href="/" className={`text-2xl sm:text-3xl font-black uppercase tracking-tighter hover:skew-x-[-10deg] transition-transform text-black animate-glitch ${isGlitching ? 'animate-glitch-entrance' : ''}`} data-text="PACEFEST">
           PACE<span className="text-primary italic">FEST</span>
         </Link>
         
