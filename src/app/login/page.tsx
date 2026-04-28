@@ -81,7 +81,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center p-6 bg-background grid-pattern-sm">
+    <div className="min-h-screen bg-background grid-pattern-sm flex flex-col items-center p-6 pt-32 pb-20 relative">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
