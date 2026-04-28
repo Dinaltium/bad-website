@@ -2,16 +2,31 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Lock, ArrowRight, Code, Globe, Zap } from 'lucide-react';
+import { User, Lock, ArrowRight, Code, Globe, Zap, LogIn } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      alert('Please fill in all fields');
+      return;
+    }
+    // Simple functional login from AuthContext
+    login(email);
+    router.push('/');
+  };
 
   return (
     <div className="min-h-screen bg-background grid-pattern flex items-center justify-center p-6 relative overflow-hidden">
@@ -49,39 +64,45 @@ export default function LoginPage() {
           </CardHeader>
           
           <CardContent className="p-8 space-y-6">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-black uppercase tracking-widest ml-1">Email Address</label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
-                  <Input 
-                    type="email" 
-                    placeholder="YOU@EXAMPLE.COM" 
-                    className="pl-12 h-14 border-4 border-border shadow-[4px_4px_0px_black] bg-white text-black font-bold focus:shadow-none transition-all placeholder:text-zinc-400"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-black uppercase tracking-widest ml-1">Email Address</label>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
+                    <Input 
+                      type="email" 
+                      placeholder="YOU@EXAMPLE.COM" 
+                      className="pl-12 h-14 border-4 border-border shadow-[4px_4px_0px_black] bg-white text-black font-bold focus:shadow-none transition-all placeholder:text-zinc-400"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-black uppercase tracking-widest ml-1">Secret Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
+                    <Input 
+                      type="password" 
+                      placeholder="••••••••" 
+                      className="pl-12 h-14 border-4 border-border shadow-[4px_4px_0px_black] bg-white text-black font-bold focus:shadow-none transition-all placeholder:text-zinc-400"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-black uppercase tracking-widest ml-1">Secret Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
-                  <Input 
-                    type="password" 
-                    placeholder="••••••••" 
-                    className="pl-12 h-14 border-4 border-border shadow-[4px_4px_0px_black] bg-white text-black font-bold focus:shadow-none transition-all placeholder:text-zinc-400"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <Button className="w-full h-16 text-2xl font-black border-4 border-border shadow-[6px_6px_0px_black] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all uppercase italic" animation="pop">
-              AUTHENTICATE <ArrowRight className="ml-2 w-8 h-8" />
-            </Button>
+              <Button 
+                type="submit"
+                className="w-full h-16 text-2xl font-black border-4 border-border shadow-[6px_6px_0px_black] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all uppercase italic" 
+                animation="pop"
+              >
+                AUTHENTICATE <ArrowRight className="ml-2 w-8 h-8" />
+              </Button>
+            </form>
 
             <div className="relative flex items-center py-4">
               <div className="flex-grow border-t-2 border-border"></div>

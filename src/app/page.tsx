@@ -1,17 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Code, Gamepad2, Music, Users, Calendar, Trophy, 
-  ArrowRight, Star, Rocket, Zap, Search, Filter,
-  MapPin, Clock, X, Check, ArrowUpRight
+  ArrowRight, Zap, Trophy, Rocket, Star, Calendar, 
+  Clock, MapPin, Mail, Phone, MessageSquare, 
+  Users, Code, Gamepad2, Search, Check, X, ArrowUpRight 
 } from 'lucide-react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/context/AuthContext';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -99,6 +100,7 @@ const events = [
 ];
 
 export default function CompleteEventsPage() {
+  const { isLoggedIn } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
@@ -210,9 +212,9 @@ export default function CompleteEventsPage() {
             <button onClick={() => scrollToSection('#schedule')} className="cursor-pointer hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Schedule</button>
             <button onClick={() => scrollToSection('#stats')} className="cursor-pointer hover:text-primary underline decoration-transparent hover:decoration-primary decoration-4 transition-all">Stats</button>
           </div>
-          <Link href="/login">
+          <Link href={isLoggedIn ? "/events" : "/login"}>
             <Button variant="default" className="border-4 border-border shadow-[4px_4px_0px_black] uppercase font-black" animation="wiggle">
-              Login Portal
+              {isLoggedIn ? "Dashboard" : "Login Portal"}
             </Button>
           </Link>
         </div>
@@ -235,8 +237,10 @@ export default function CompleteEventsPage() {
               The biggest technical festival of the decade is here. Join 50,000+ students in a journey of pure innovation.
             </p>
             <div className="hero-cta flex gap-6 pt-6">
-              <Button size="xl" className="border-4 border-border text-2xl py-8 px-12" animation="pop">
-                GET TICKETS <Zap className="ml-2 w-6 h-6 fill-current" />
+              <Button size="xl" className="border-4 border-border text-2xl py-8 px-12" animation="pop" asChild>
+                <Link href={isLoggedIn ? "#events" : "/login"}>
+                  {isLoggedIn ? "VIEW EVENTS" : "GET TICKETS"} <Zap className="ml-2 w-6 h-6 fill-current" />
+                </Link>
               </Button>
             </div>
           </div>
@@ -450,9 +454,12 @@ export default function CompleteEventsPage() {
       <footer className="bg-foreground border-t-8 border-border py-12 relative overflow-hidden mt-32">
         <div className="flex animate-marquee whitespace-nowrap gap-20">
           {[...Array(10)].map((_, i) => (
-            <span key={i} className="text-background font-black text-8xl uppercase italic opacity-20">
-              PACE FEST 2026 • PACE FEST 2026 • 
-            </span>
+            <div key={i} className="flex items-center gap-20 text-background font-black text-4xl uppercase italic">
+              <span>2,400+ Participants</span>
+              <span>12 Major Events</span>
+              <span>₹5L+ Prize Pool</span>
+              <span>3 Days of Madness</span>
+            </div>
           ))}
         </div>
         <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
